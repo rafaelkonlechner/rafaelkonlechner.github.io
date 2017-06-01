@@ -20,7 +20,7 @@ h1 {
 h2 {
     font-family: 'Roboto Mono', monospace;
     font-weight: lighter;
-    font-size: 1.4em;
+    font-size: 1.2em;
 }
 
 .left {
@@ -66,15 +66,9 @@ h2 {
     }
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 550px) {
     :root {
-        --icon-size: 42px;
-    }
-    h1 {
-        font-size: 2.0em;
-    }
-    h2 {
-        font-size: 1.8em;
+        --icon-size: 28px;
     }
     .left {
         width: 50%;
@@ -85,6 +79,24 @@ h2 {
     .right {
         width: 50%;
         height: 100%;
+    }
+    .inner {
+        margin: 12vh auto;
+    }
+    .links {
+        margin-top: 10vh;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    :root {
+        --icon-size: 42px;
+    }
+    h1 {
+        font-size: 2.0em;
+    }
+    h2 {
+        font-size: 1.8em;
     }
     .inner {
         margin: 20vh auto;
@@ -100,9 +112,6 @@ h2 {
     }
     h2 {
         font-size: 2.0em;
-    }
-    .inner {
-        margin: 30vh auto;
     }
 }
 
