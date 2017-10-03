@@ -13,14 +13,14 @@ body {
 
 h1 {
     font-family: 'Roboto Mono', monospace;
-    font-weight: lighter;
+    font-weight: 500;
     font-size: 1.4em;
 }
 
 h2 {
     font-family: 'Roboto Mono', monospace;
     font-weight: lighter;
-    font-size: 1.2em;
+    font-size: 1.0em;
 }
 
 .left {
@@ -43,7 +43,7 @@ h2 {
 
 .inner {
     margin: 10vh auto;
-    width: 80%;
+    width: 65%;
 }
 
 .links {
@@ -99,7 +99,7 @@ h2 {
         font-size: 1.8em;
     }
     .inner {
-        margin: 20vh auto;
+        margin: 25vh auto;
     }
     .links {
         margin-top: 10vh;
