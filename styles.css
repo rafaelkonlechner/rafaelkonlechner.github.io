@@ -67,7 +67,7 @@ h2 {
 }
 
 @media only screen and (min-width: 550px) {
-    :root {
+     :root {
         --icon-size: 28px;
     }
     .left {
@@ -89,7 +89,7 @@ h2 {
 }
 
 @media only screen and (min-width: 768px) {
-    :root {
+     :root {
         --icon-size: 48px;
     }
     h1 {
