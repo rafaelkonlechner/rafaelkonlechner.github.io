@@ -24,6 +24,12 @@ h2 {
     line-height: 1.6em;
 }
 
+h3 {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: lighter;
+    font-size: 1.0em;
+}
+
 a {
     color: #323648;
     text-decoration: none;
@@ -55,6 +61,11 @@ a {
 .links {
     margin-top: 5vh;
     width: 100%;
+    text-align: center;
+}
+
+.info {
+    margin-top: 10vh;
     text-align: center;
 }
 
@@ -162,7 +173,10 @@ a {
     background-size: var(--icon-size) var(--icon-size);
 }
 
-.medium:hover, .facebook:hover, .github:hover, .photos:hover {
+.medium:hover,
+.facebook:hover,
+.github:hover,
+.photos:hover {
     filter: brightness(70%);
 }
 
