@@ -7,18 +7,21 @@
 }
 
 body {
+    color: #EBEBD3;
+    /*background-color: #EBF2FA;*/
+    background-color: #030A27;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: lighter;
     margin: 0px;
-    overflow: hidden;
 }
 
 h1 {
     font-family: 'Merriweather', serif;
     font-weight: 500;
-    font-size: 2.6em;
+    font-size: 2.3em;
 }
 
 h2 {
-    font-family: 'Monserrat', sans-serif;
     font-weight: lighter;
     font-size: 1.4em;
     line-height: 1.6em;
@@ -31,8 +34,16 @@ h3 {
 }
 
 a {
-    color: #323648;
+    color: #FFC145;
     text-decoration: none;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+    margin: 10px auto;
 }
 
 .left {
@@ -40,7 +51,6 @@ a {
     background-size: 100% auto;
     background-repeat: no-repeat;
     background-position: center top;
-    background-color: #323648;
     width: 100%;
     height: 36%;
     float: left;
@@ -49,12 +59,11 @@ a {
 .right {
     width: 100%;
     height: 64%;
-    background-color: #1DE9B6;
     float: left;
 }
 
 .inner {
-    margin: 8vh auto;
+    margin: 10% auto;
     width: 65%;
 }
 
@@ -65,8 +74,8 @@ a {
 }
 
 .info {
-    margin-top: 10vh;
-    text-align: center;
+    margin-top: 5vh;
+    font-size: 1.2em;
 }
 
 .link {
@@ -78,7 +87,10 @@ a {
 
 @media only screen and (min-width: 380px) {
     h1 {
-        font-size: 3.0em;
+        font-size: 2.6em;
+    }
+    h2 {
+        font-size: 1.5em;
     }
 }
 
@@ -90,8 +102,8 @@ a {
 }
 
 @media only screen and (min-width: 550px) {
-     :root {
-        --icon-size: 28px;
+    body {
+        overflow: hidden;
     }
     h1 {
         font-size: 2.4em;
@@ -99,6 +111,25 @@ a {
     h2 {
         font-size: 1.6em;
         line-height: 1.4em;
+    }
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    .inner {
+        margin: 10vh auto;
+    }
+    .links {
+        margin-top: 5vh;
+    }
+    .link {
+        margin: 5px;
+    }
+    .info {
+        text-align: center;
+    }
+    :root {
+        --icon-size: 28px;
     }
     .left {
         width: 50%;
@@ -110,87 +141,115 @@ a {
         width: 50%;
         height: 100%;
     }
-    .inner {
-        margin: 25vh auto;
-    }
-    .links {
-        margin-top: 10vh;
-    }
 }
 
 @media only screen and (min-width: 768px) {
-     :root {
+    :root {
         --icon-size: 32px;
     }
     h1 {
-        font-size: 3.0em;
+        font-size: 2.4em;
     }
     h2 {
         font-size: 1.8em;
         line-height: 1.5em;
     }
+    .inner {
+        margin: 15vh auto;
+    }
+    .links {
+        margin-top: 10vh;
+    }
+    .link {
+        margin: calc(var(--icon-size) / 3);
+    }
 }
 
 @media only screen and (min-width: 980px) {
-     :root {
+    :root {
         --icon-size: 44px;
     }
     h1 {
-        font-size: 4.0em;
+        font-size: 3.3em;
+    }
+    div.info {
+        margin-top: 10vh;
+        font-size: 1.4em;
     }
 }
 
 @media only screen and (min-width: 1180px) {
     h1 {
-        font-size: 4.4em;
+        font-size: 3.9em;
+    }
+    h2 {
+        font-size: 2.2em;
+    }
+    .inner {
+        margin: 20vh auto;
+    }
+    div.info {
+        font-size: 1.4em;
     }
 }
 
 @media only screen and (min-width: 1240px) {
     h1 {
-        font-size: 5.0em;
+        font-size: 4.5em;
     }
     h2 {
-        font-size: 2.0em;
+        font-size: 2.3em;
         line-height: 1.6em;
+    }
+    .inner {
+        margin: 15vh auto;
+    }
+    div.info {
+        margin-top: 5vh;
+        font-size: 1.4em;
     }
 }
 
-.teal {
-    color: #00796B;
-}
-
-.smooth {
-    color: #323648;
-}
-
-.grey {
-    color: #5b5e6d;
+@media only screen and (min-width: 1240px) {
+    h1 {
+        font-size: 4.5em;
+    }
+    h2 {
+        font-size: 2.3em;
+        line-height: 1.6em;
+    }
+    .inner {
+        margin: 20vh auto;
+    }
+    div.info {
+        margin-top: 5vh;
+        font-size: 1.4em;
+    }
 }
 
 .medium {
-    background-image: url('assets/medium.png');
+    background-image: url('assets/medium-1.png');
     background-size: var(--icon-size) var(--icon-size);
 }
 
-.medium:hover,
-.facebook:hover,
-.github:hover,
-.photos:hover {
+.medium:hover, .facebook:hover, .github:hover, .photos:hover {
     filter: brightness(70%);
 }
 
 .facebook {
-    background-image: url('assets/facebook.png');
+    background-image: url('assets/facebook-1.png');
     background-size: var(--icon-size) var(--icon-size);
+    background-repeat: no-repeat;
 }
 
 .github {
-    background-image: url('assets/github.png');
+    background-image: url('assets/github-1.png');
     background-size: var(--icon-size) var(--icon-size);
+    background-repeat: no-repeat;
 }
 
 .photos {
-    background-image: url('assets/google-photos.png');
+    background-image: url('assets/google-photos-1.png');
     background-size: var(--icon-size) var(--icon-size);
+    background-repeat: no-repeat;
 }
