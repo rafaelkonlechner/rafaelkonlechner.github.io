@@ -1,0 +1,162 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Rafael Konlechner - Payment Channel Networks</title>
+    <meta name="description" content="Payment Channel Networks, CSIRO, Data61, Decentralized Economy, Blockchain, Lightning Network">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700,800" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="article.css">
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+</head>
+
+<body>
+    <header>
+        <a href="portfolio.html">← Portfolio</a>
+    </header>
+    <article>
+        <div class="header">
+            <h1>Payment Channel Networks</h1>
+            <h2>Can PCNs solve the scalability problem of Blockchains?</h2>
+            <div class="byline">
+                <address class="author">Rafael Konlechner, January 2018</address>
+            </div>
+            Tags:
+            <ul class="tags">
+                <li><span class="tag">Decentralized Economy</span></li>
+                <li><span class="tag">Blockchain</span></li>
+                <li><span class="tag">Lightning Network</span></li>
+            </ul>
+        </div>
+
+        <div class="disclaimer">
+            During a traineeship at <a href="https://www.data61.csiro.au/">CSIRO</a> in Sydney under the supervision of Dr. Ingo Weber, I extensively studied blockchain technologies, such as the Ethereum Platform and Payment Channel Networks (PCNs). To
+            test the reliability of payment routing in PCNs, I developed a tool for running experiments.
+        </div>
+
+        <figure>
+            <img style="width: 80%;" src="assets/sim-pcn-cropped.png"></img>
+            <figcaption>PCN Simulator: Specify network properties and simulate payments</figcaption>
+        </figure>
+
+        <h3>Ubiquitous Cryptocurrencies</h3>
+
+        <p>One fundamental goal that motivates much of the research that is going on in cryptocurrencies and blockchain technologies is making these technologies fit for every-day transactions, such as buying coffee at the local coffee shop. However, some
+            circumstances complicate the matter:</p>
+        <ul>
+            <li><strong>High Transaction Fees</strong></li>
+            <li><strong>Long Transaction Confirmation Times</strong> </li>
+            <li><strong>Privacy Issues</strong></li>
+            <li><strong>Volatility of Cryptocurrencies</strong></li>
+        </ul>
+
+        <h4>Transaction Fees in Bitcoin and Ethereum</h4>
+
+        <p>On December 22<sup>nd</sup> 2017, right before Christmas, the average fee for a Bitcoin transaction hit a high of 55.16 USD. On the very same day, the average transaction value was 70,000 USD. It is obvious that these numbers are orders of magnitude
+            away from a currency that is fit for every-day use. To be fair, fees in Ethereum do look better: In January, the average transaction cost was 1.18 USD. However, fees in Ethereum also rose quite fast, starting from a couple of cents only a
+            few months ago. This is due to its rising popularity in the development community.</p>
+
+        <figure>
+            <img style="width: 80%;" src="assets/transaction-fee.png"></img>
+            <figcaption>Bitcoin transaction fees in December 2017<sup><a href="#ref">1</a></sup></figcaption>
+        </figure>
+        <p>If you are familiar with the concept of <em>Proof of Work</em>, you will find these developments very unsurprising. Block size in Bitcoin is limited &mdash; a scarce resource &mdash; and fees are the result of supply and demand. This means that
+            fees do not stand in any proportion to the transacted value and are themselves highly volatile. As a result, a transaction of 100k USD may be as expensive as buying a coffee for 4 USD. Of course, this is unacceptable for everyday payments.</p>
+        <p>
+            Now, there might be a solution to these problems.</p>
+
+        <h3>Brief Introduction to Payment Channel Networks</h3>
+
+        <p>Payment Channel Networks, such as the <a href="https://lightning.network/">Lightning Network</a>, allow arbitrary peers to make transactions via what are called <em>"payment channels"</em>. For this to be possible, two nodes need to open a channel
+            and commit funds to it. The opening of a channel is then confirmed on the blockchain as a regular transaction and incurs the normal transaction fee. But now the peers can exchange as many payments as they like for free, as long as they stay
+            within their funding bounds, because every transaction just happens between the two parties &mdash; secured by the funding &mdash; with no transaction written to the blockchain. Finally, when the peers want to redeem their funds, they close
+            the channel with the current balances, which is another transaction on the blockchain. Since fees only apply for opening and closing channels, they potentially save lots of transaction costs. In addition, the confirmation time is down from
+            somewhere around a couple of minutes to seconds.</p>
+
+        <figure>
+            <img style="width: 40%;" src="assets/Commitment-Tx.png" />
+            <figcaption>Alice pays Bob 0.1 BTC via a channel that is funded with 1.0 BTC</figcaption>
+        </figure>
+
+        <h3>Payment Routing: Flare</h3>
+
+        <p>Now comes the cool stuff: In addition to paying via a direct channel, peers can also use channes from other peers to forward their payments, which means that nodes and their channels form a payment channel network. These forwarded payments require
+            routing, which is a mechanism that finds payment routes and selects a path of channels to carry out the transaction between sender and receiver. One major contribution to routing in PCNs is the source routing protocol <em>Flare</em><sup><a href="#ref">2</a></sup>.
+            The authors describe <em>Flare</em> as a routing algorithm for the Lightning Network that uses a hybrid model of routing. The main idea behind the approach is based on the fact that some network information changes more frequently than other.
+            <em>Flare</em> uses this difference to collect and maintain a view of slowly changing network information in advance and request volatile information (i.e. liquidity and fees) on-demand. Note that at the time of writing <em>Flare</em> is a
+            proposal, but there are no clients that implement the protocol. In general, how routing is done is not prescribed by PCN protocols, such as the Lightning Network Specification<sup><a href="#ref">3</a></sup>.</p>
+
+        <h3>Fees in the Lightning Network</h3>
+
+        <p>Since miners choose which transactions they include in a block, the transaction fee for blockchains such as Bitcoin or Ethereum is determined by congestion. This implies that fees are not linked to the transaction value, so sending 1 USD may cost
+            the same as sending 100,000 USD. In PCNs, fees are subject to a fundamentally different dynamic. Instead of mining, peers earn fees by forwarding payments to other peers. Because of this fact, their interest — and hence, the fee — increases
+            in proportion to the amount they forward.</p>
+        <p>
+            Therefore, the fee for a relayed transaction in the Lightning Network is a linear function of the relayed amount $a$ and consists of a base fee $f_b$ provided in Millisatoshi (msat) (= 10<sup>−11</sup> Bitcoin), as well as a variable rate
+            $f_{v/m}$, in proportional millionths of Millisatoshi.
+        </p>
+        $$f_b + a \cdot \frac{f_{v/m}}{1000000}$$ Choosing values from the current Lightning Network Mainnet $f_b \approx 1000$ and $f_{v/m} \approx 10$, forwarding 1 USD over one channel would result in a transaction fee of 0.01%. Assuming the payment is forwarded
+        ten times until it reaches its receiver, the overall fee would be 0.1%. In short: fees are extremely competitive.
+        </p>
+
+        <h3>How Reliable are Payment Channel Networks?</h3>
+
+        <p>So far, large PCNs have not been explored thorougly. In a 2017 paper by Roos et al.<sup><a href="#ref">4</a></sup>, the authors tested the success ratio of different PCN routing algorithms in a network derived from the Ripple Credit Network. At
+            that time, the Lightning Network had not yet launched on Bitcoin Mainnet and nobody knew, how the topology of PCNs would evolve. Of course, the topology of a network has large impacts on the success ratio of routing algorithms, which is why
+            we proposed user behavior models to be added to simulations. These models try to find likely topologies, based on the behavior of PCN users.</p>
+
+        <h3>User Behavior: A Rational Model</h3>
+        <p>Users don't act randomly, when it comes to their money. They open channels that are useful for them and fund channels with money they can afford. Based on this hypothesis, certain topologies develop, which can be either good or bad for the overall
+            reliability of the PCN. At least, that was our idea. We wanted to test this hypothesis in the simulation tool that I developed. First, we needed a routine, that mimicked the behavior of users. We came up with a simple, rational behavior model
+            that aims to minimize the cost for own transactions and maximizes the return of fees. If you are familiar with behavioral economics, you know that this routine does not precisely model the behavior of us humans, which has been shown to deviate
+            from rational behavior with systematic errors, known as biases<sup><a href="#ref">5</a></sup>. We still try to justify our decision, because PCNs have also been proposed as a machine-to-machine payment mechanism, where human users are not
+            involved in payment processes.
+        </p>
+
+        <h3>First Experiments and Results</h3>
+        <p>So far, larger experiments with user behavior are still work in progress. There is a thesis at TU Wien written about that topic, which uses the simulation tool to explore the reliability of routing with user behavior in larger networks. Nonetheless,
+            I was curious to see at least some results. So, for a small but realistic network, we mined the Lightning Network on Bitcoin Mainnet (≈1000 nodes) for data and fitted probability distributions to the number of channels per node, as well as
+            the amount of funding per channel. The two graphs below show the fitted curves.
+        </p>
+        <figure>
+            <img style="width: 70%;" src="assets/Curve-Fitting-Channels.png" />
+            <figcaption>Approximating the number of channels from LN on Bitcoin Mainnet with a $\chi^2_{k=2}$-Distribution</figcaption>
+        </figure>
+
+        <figure>
+            <img style="width: 70%;" src="assets/Curve-Fitting-Funding.png" />
+            <figcaption>Approximating channel funding from LN on Bitcoin Mainnet with a $\beta$-Distribution</figcaption>
+        </figure>
+        <p>
+            Next, we measured the reliability of routing using <em>Flare</em> (the best-described source routing alternative at the moment) with four metrics, the main one being the success ratio &mdash; the number of successful payments versus failed
+            payments. First, we tested two static settings without user behavior. In the first setting, nodes were initialized with an average of two channels per node, following the distribution we fitted from the Lightning Network data. After 10,000
+            payments, the success ratio settled at 92%. For the second setting, we doubled the number of channels per node to four, resulting in a success ratio of 98%. Observation: The success ratio of payment routing increases with the number of channels
+            per node. On average, routes also became 5.5% shorter. Now we wanted to compare, if user behavior had an influence on the scores. We started with the same initial settings as before, but this time nodes were allowed to open and close channels,
+            based on their objective to minimize fees and maximize profits. To incentivise high activity, we assumed a very low blockchain transaction cost, where one blockchain transaction was as expensive as 33 channel transactions. What we found was
+            that in both cases the success ratio climbed to 99% and the amount of channels reduced by 61-63%, meaning less money was locked in channels. Therefore, at least for our small setting it was true that, if everyone acted in his/her own best
+            interest, everyone was better off.
+        </p>
+
+        <h3>Summary</h3>
+        <p>
+            Fast transaction confirmations and particularly low fees make PCNs a promising alternative on top of <em>Proof of Work</em> blockchains. But, we do not yet know, whether they will scale good enough and how reliable payment routing would be
+            for large networks. We asked the question: How would the topology of a PCN evolve, if every peer in the network acted in his/her own best interest and is everyone better off in terms of reliability? Compared to static settings, the preliminary
+            answer to our question is yes. However, this was just the beginning. There is still a lot of work required to test our hypothesis with larger networks.
+        </p>
+        <h4>Notes and References</h4>
+        <ol id="ref" class="references">
+            <li>Historical chart of Bitcoin transaction fees (<a href="https://bitinfocharts.com/comparison/bitcoin-transactionfees.html">Link</a>)</li>
+            <li><i>Flare: An Approach to Routing in Lightning Network</i>, published in 2016 (<a href="https://bitfury.com/content/downloads/whitepaper_flare_an_approach_to_routing_in_lightning_network_7_7_2016.pdf">Link to Publication</a>)</li>
+            <li>The Lightning Network Specifications, hosted on GitHub (<a href="https://github.com/lightningnetwork/lightning-rfc">Link to Repository</a>)</li>
+            <li>Roos, S., Moreno-Sanchez, P., Kate, A., & Goldberg, I. (2017). Settling Payments Fast and Private: Efficient Decentralized Routing for Path-Based Transactions. <i>arXiv preprint arXiv:1709.05748.</i></li>
+            <li>De Martino, B., Kumaran, D., Seymour, B., & Dolan, R. J. (2006). Frames, biases, and rational decision-making in the human brain. <i>Science, 313(5787), 684-687</i>.</li>
+        </ol>
+    </article>
+</body>
+
+</html>

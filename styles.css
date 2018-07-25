@@ -4,20 +4,21 @@
 
 body {
     color: #EBEBD3;
-    background-color: #030A27;
+    background-color: #000c2f;
     margin: 0px;
     font-family: 'Open Sans', sans-serif;
+    font-weight: lighter;
 }
 
 h1 {
     color: #FFC145;
     font-weight: 300;
-    font-size: 2.0em;
+    font-size: 1.4em;
 }
 
 h2 {
     font-weight: 300;
-    font-size: 1.4em;
+    font-size: 1.5em;
     line-height: 1.4em;
 }
 
@@ -27,7 +28,7 @@ a {
 }
 
 .left {
-    background: url('assets/profile.jpg');
+    background: url('assets/profile-1.jpg');
     background-size: 100% auto;
     background-repeat: no-repeat;
     background-position: 50% 80%;
@@ -67,16 +68,12 @@ a {
 }
 
 @media only screen and (min-width: 375px) {
-    h1 {
-        font-size: 2.2em;
-    }
     h2 {
-        font-size: 1.25em;
         line-height: 1.5em;
     }
     .inner {
         margin: 12% auto;
-        width: 85%;
+        width: 80%;
     }
     .info {
         margin-top: 7vh;
@@ -88,12 +85,10 @@ a {
 
 @media only screen and (min-width: 414px) {
     h1 {
-        font-size: 2.2em;
-        font-weight: 400;
+        font-size: 1.6em;
     }
     h2 {
-        font-size: 1.6em;
-        font-weight: 400;
+        font-size: 1.8em;
     }
     .info {
         margin-top: 5vh;
@@ -118,7 +113,8 @@ a {
         overflow: hidden;
     }
     h1 {
-        font-size: 2.0em;
+        font-size: 1.4em;
+        margin: 40px auto;
     }
     h2 {
         font-size: 1.4em;
@@ -140,7 +136,7 @@ a {
     }
     .inner {
         width: 80%;
-        margin: 15vh auto;
+        margin: 20vh auto;
     }
     .links {
         margin-top: 5vh;
@@ -179,11 +175,11 @@ a {
 
 @media only screen and (min-width: 1112px) {
     h1 {
-        font-size: 2.2em;
+        font-size: 1.7em;
         margin: 1.0em auto;
     }
     h2 {
-        font-size: 1.7em;
+        font-size: 2.2em;
         margin: 1.0em auto;
     }
     .inner {
@@ -191,25 +187,25 @@ a {
         width: 75%;
     }
     .info {
-        font-size: 1.4em;
+        font-size: 1.2em;
     }
 }
 
 @media only screen and (min-width: 1600px) {
     h1 {
-        font-size: 3.0em;
+        font-size: 1.8em;
     }
     h2 {
-        font-size: 2.0em;
+        font-size: 2.6em;
         margin: 1.4em auto;
     }
     .inner {
-        margin: 30vh auto;
+        margin: 26vh auto;
         width: 65%;
     }
     .info {
         margin-top: 10vh;
-        font-size: 1.8em;
+        font-size: 1.4em;
     }
     .links {
         margin-top: 5vh;
@@ -219,12 +215,7 @@ a {
     }
 }
 
-.medium {
-    background-image: url('assets/medium-1.png');
-    background-size: var(--icon-size) var(--icon-size);
-}
-
-.medium:hover, .facebook:hover, .github:hover, .photos:hover {
+.facebook:hover, .github:hover, .email:hover {
     filter: brightness(70%);
 }
 
@@ -240,8 +231,7 @@ a {
     background-repeat: no-repeat;
 }
 
-.photos {
-    background-image: url('assets/google-photos-1.png');
+.email {
+    background-image: url('assets/email-1.png');
     background-size: var(--icon-size) var(--icon-size);
-    background-repeat: no-repeat;
 }

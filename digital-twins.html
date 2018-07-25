@@ -1,0 +1,120 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Rafael Konlechner - Digital Twins</title>
+    <meta name="description" content="CDL-MINT, Digital Twins, Time-Series Analysis, 3D Simulation, Internet of Things, Industrial Robotics">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700,800" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="article.css">
+</head>
+
+<body>
+    <header>
+        <a href="portfolio.html">← Portfolio</a>
+    </header>
+    <article>
+        <div class="header">
+            <h1>Digital Twins</h1>
+            <h2>Analyzing time-series of robots in production facilities</h2>
+            <div class="byline">
+                <address class="author">Rafael Konlechner, June 2018</address>
+            </div>
+            <span class="tag-description">Tags:</span>
+            <ul class="tags">
+                <li><span class="tag">3D Simulation</span></li>
+                <li><span class="tag">Internet of Things</span></li>
+                <li><span class="tag">Industrial Robotics</span></li>
+            </ul>
+        </div>
+
+        <div class="disclaimer">
+            At <a href="https://cdl-mint.big.tuwien.ac.at/">CDL-MINT</a>, we test new ways of programming robots in industial contexts. To experiment with the integration of runtime-data with design models, I developed a 3D simulation of a robotic arm.
+        </div>
+
+        <p>Robots can be remarkably powerful at completing simple and repeated tasks, but it is hard to develop and maintain the software for more complex scenarios<sup><a href="#ref">1</a></sup>. With increasingly flexible production, involving a multitude
+            of different machines and systems, traditional ways of developing robot controllers are no longer efficient. The CDL-MINT investigates, whether model-driven development and the integration of runtime data will help to make industrial robot
+            programming easier and less error-prone. In short, we investigate the concept of <em>Digital twins</em> <sup><a href="#ref">2</a></sup>. My main task as an engineer is to provide a playing field for experimentation. One of these playing fields
+            is the simulated pick-and-place unit that you can see in the video below.</p>
+
+        <figure>
+            <video class="clip" autoplay loop>
+                <source src="assets/Pick-and-Place.mp4" type="video/mp4">
+            </video>
+            <figcaption>
+                The pick-and-place unit, looping through a simple procedure.
+            </figcaption>
+        </figure>
+
+        <h3>Virtual Internet of Things</h3>
+
+        <p>The extraordinary thing about this simulation is the way it is controlled. The simulation communicates via Internet protocols and its components act just like regular IoT-devices. This enables us to run most of the logic on a server, rather than
+            on local hardware controllers, leaving us with more computational resources and thus, more powerful programming tools.</p>
+
+        <p>The simulated scene is equipped with a number of movement sensors, as well as two virtual cameras, that monitor items when they pass the unit. In the clips below, you can watch items being detected on the conveyor and the QR codes, that are scanned
+            when the items are placed on the workbench. All this data is available to procedure programmers via a message-based API.</p>
+
+        <figure>
+            <video class="clip" style="width: 130px; height: 120px;" autoplay loop>
+                <source src="assets/Pickup-Cam.mp4" type="video/mp4">
+            </video>
+            <video class="clip" style="width: 130px; height: 120px;" style="margin-left: 40px;" autoplay loop>
+                <source src="assets/Detection-Cam.mp4" type="video/mp4">
+            </video>
+            <figcaption>
+                Two virtual cameras check for items on the belt and scan the product QR code.
+            </figcaption>
+        </figure>
+
+        <p>
+            Thanks to this API, programming procedures for the pick-and-place unit is flexible and not bound to a special programming language. The figure below adds a small user interface for monitoring the unit and programming new procedures in a graphical editor.
+        </p>
+
+        <figure>
+            <video class="clip" autoplay loop>
+                <source src="assets/Web-Editor.mp4" type="video/mp4">
+            </video>
+            <figcaption>
+                Editor with rich information about the current state.
+            </figcaption>
+        </figure>
+
+        <h3>Time Series Data</h3>
+
+        <p>For further analysis, we record all sensor data sent from the unit. This establishes a feedback-loop to the software controller and can help to optimize or adapt the controlling procedure. The real-time analysis of sensor data has itself become
+            a large field of research.</p>
+
+        <figure>
+            <video class="clip" autoplay loop>
+                <source src="assets/Time-Series.mp4" type="video/mp4">
+            </video>
+            <figcaption>
+                All sensor measurements are recorded in a time-series database.
+            </figcaption>
+        </figure>
+
+        <h3>Physical Robots</h3>
+
+        <p>In Spring of 2018, the playing field was joined by two physical robots. These robotic arms are controlled by custom Raspberry Pi computers, developed by the <a href="">Practical Robotics Institute Austria</a>.</p>
+
+        <figure>
+            <img class="zoom tripple-image" src="assets/robot-old.jpg" />
+            <img class="zoom tripple-image" src="assets/robot-new.jpg" />
+            <img class="zoom tripple-image" src="assets/robot-new-2.jpg" />
+        </figure>
+
+        <h3>Relevance</h3>
+
+        <p>So far, the work related to 3D simulations and the physical robotic arms resulted in two publications <sup><a href="#ref">3</a>, <a href="#ref">4</a></sup> and one thesis <small>(in progress)</small>.</p>
+        <br/>
+        <h4>Notes and References</h4>
+        <ol id="ref" class="references">
+            <li>Robot Conquers One of the Hardest Human Tasks: Assembling Ikea Furniture. <i>Published in: The New York Times.</i> (<a href="https://www.nytimes.com/2018/04/18/science/robots-ikea-furniture.html">Link to Article</a>)</li>
+            <li>Wikipedia article about <em>Digital twins</em> (<a href="https://en.wikipedia.org/wiki/Digital_twin">Link to Article</a>)</li>
+            <li>Wolny, S., Mazak, A., Konlechner, R., & Wimmer, M. (2017). Towards Continuous Behavior Mining. <i>Data-driven Process Discovery and Analysis 2017.</i>, 2016, 149-150.</li>
+            <li>Wolny, S., Mazak, A., Wimmer, M., Konlechner, R., & Kappel, G. (2018). Model-Driven Time-Series Analytics.<i>Enterprise Modelling and Information Systems Architectures</i>, 13, 252-261.</li>
+        </ol>
+    </article>
+</body>

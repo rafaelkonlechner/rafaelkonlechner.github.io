@@ -1,0 +1,242 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Smarter Road Logistics</title>
+    <meta name="description" content="Autonomous Logistics, Mathematical Optimization, Real Time Monitoring, LTL Shipping">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700,800" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="article.css">
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+</head>
+
+<body>
+
+    <header>
+        <a href="portfolio.html">← Portfolio</a>
+    </header>
+    <article>
+        <div class="header">
+            <h1>Smarter Road Logistics</h1>
+            <h2>Optimizing freight streams in logistics networks</h2>
+            <div class="byline">
+                <address class="author">Rafael Konlechner, September 2017</address>
+            </div>
+            <span class="tag-description">Tags:</span>
+            <ul class="tags">
+                <li><span class="tag">Mathematical Optimization</span></li>
+                <li><span class="tag">Software Architecture</span></li>
+                <li><span class="tag">Autonomous Logistics</span></li>
+            </ul>
+        </div>
+        <div class="disclaimer">After an internship in the summer of 2015, I was asked to join IBM for a project at the logistics company DB Schenker. In addition to working as a software developer, I was also given the opportunity to write my thesis at the company, tackling
+            an important problem in road logistics with the help of domain experts and insightful data. In this article, I will briefly summarize my findings.</div>
+
+        <h3>Efficiency in Road Logistics</h3>
+        <p>For thousands of years, it was sufficient for merchants to rely on experience and intuition when transporting their goods, but this has changed. In 2016, 2200 Billion tonne-kilometers of goods were transported in Europe alone, 75% of which on
+            roads. Now imagine, you are driving on one of these roads and there is a truck in front of you. What is your estimate about the probability of that truck being empty? For Austria, the correct answer would be 50%. <em>Half</em> of all tours
+            are empty. This is not just an economic problem &mdash; for operating companies and for people stuck in traffic congestions &mdash; but it is also harmful for the environment. In a small example, we will show, how a modern toolset of different
+            technologies can help us to make better decisions, leading to more efficient and sustainable transportation.
+        </p>
+        <figure>
+            <img style="width: 80%;" src="assets/empty-journeys.png" />
+            <figcaption>The share of empty journeys in Eurpean member states. Source: Eurostat<sup><a href="#ref">1</a></sup></figcaption>
+        </figure>
+
+        <h3>Planning Schedules in Logistics</h3>
+        <p>First of, you might ask yourself: How is that even possible? After all, it costs a lot of money to drive empty trucks around. Taking Austrian numbers from Eurostat, empty hauls cost transport providers about 945M€ per year<sup><a href="#ref">2</a></sup>.
+            For margin businesses, this is a lot of money. So why haven't there been larger investments in technologies that aim to solve these problems and what prevents transportation providers from being more efficient with their resources?</p>
+
+        <p>Without giving away any internal details, I can confirm many of the problems that have often been discussed in common logistics literature. Transportation processes are vastly complex and coordination depends on many external, unpredictable factors.
+            Thus, lots of planning happens manually or using dedicated software, that specializes on one particular aspect of transportation, but does not integrate well with other software.</p>
+
+        <p>Let us start by picking one typical mode of transportation, which is also a large part of the businesses of DB Schenker and similar logistics providers: Less-than-truckload (LTL) shipping. With LTL shipping, the freight is moved through a network
+            of hubs using scheduled tours and turnovers before being delivered to the customer. DB Schenker operates such an LTL network with eleven turnover nodes in Austria. It is their job to schedule all trucks within the network, which are a couple
+            of hundred movements per week. The schedule needs to ensure that there are enough connections for fast transportation, while keeping vehicles well utilized. The state-of-the-art approach to planning schedules is strategic: schedules are only
+            updated a couple of times each year, which means that planning depends on long-term forecasts and cannot predict changes in short-term demand. If planning were to become more flexible, these fluctuations could be considered, potentially leading
+            to more efficient transportation.</p>
+
+        <h3>Automizing Scheduling Decisions</h3>
+
+        <p>As a first step towards more flexible schedules, our aim was to design a system that adapts vehicle schedules autonomously, based on current demand. This required us to do three things: (1) monitor the current network state, (2) calculate adaptions
+            to the schedule and (3) construct a mechanism that can react to unforseen delays. I will cover all three parts in the following sections.</p>
+
+        <h3>Part 1: Collecting Data in Real Time</h3>
+
+        <p>In the figure below, you can see a diagram of the application architecture we designed to collect all the required data. This allows us to monitor freight and vehicle movements in a transportation network, including the status and location of
+            shipments via RFID or barcodes, the location of vehicles with telemetry data and GPS, current travel times on calculated routes via the Google Road API and current weather information from the Weather Company. We use event processing to mould
+            these events into a single, coherent digital image of the network to provide uniform access to all participating entities and items.</p>
+        <figure>
+            <img style="width: 80%;" src="assets/architecture.png" />
+            <figcaption>Architecture for planning and monitoring logistics networks</figcaption>
+        </figure>
+        <h3>Part 2: Calculating Dynamic Vehicle Schedules</h3>
+        <p>Based on the observations we have from Part 1, we can automatize some of the decision processes related to schedule planning. In principle, this means answering the following question:</p>
+        <blockquote>
+            Given a logistics network with turnover hubs and transportation vehicles and a set of shipments at their origin node, what is the optimal way to move them to their destination? How many vehicles are required, when are they scheduled and which routes do
+            they take?
+        </blockquote>
+        <p>As it turns out, there already exists a formalized problem that loosely models our case with LTL shipping. It is called the <em>Transshipment Problem</em> <sup><a href="#ref">3</a></sup> and we can use it as a starting point to add further constraints.
+            The <em>Transshipment Problem</em> is an optimization problem, consisting of a set of hubs $H$, a set of shipments $balance$, which contains the weights, origins and destinations for all shipments and three matrices: the distance matrix $d$,
+            which contains the distances between all nodes and the two decision matrices $s$ and $v$, where $s$ determines the route of shipments through hubs and $v$ assigns a number of vehicles to each connection in $d$, based on $s$.</p>
+        <p>The objective of the problem is to minimize the overall distances driven by all vehicles:</p>
+        <div style="text-align: center;">
+            <div class="equation">$$ min_{x \in \mathbb{Z}^+} \sum_{i \in H} \sum_{j \in H} d_{i,j} \cdot v_{i,j} \cdot cost $$</div>
+        </div>
+        <p>A constraint ensures that shipments depart from their origin and arrive at their destination. Another constraint limits the capacity of each hub $capacity_h$. Finally, we use a third constraint to limit the capacity of vehicles $capacity_v$.</p>
+        <div style="text-align: center;">
+            <div class="equation">$$ \forall i \in H : \sum_{j \in H}{s_{i,j}} - \sum_{k \in H}{s_{k,i}} = balance_i $$</div>
+            <div class="equation">$$ \forall i \in H : \sum_{j \in H}{s_{j,i}} \leq capacity_i $$</div>
+            <div class="equation">$$ \forall i, j \in H \text{ : } v_{i,j} = \frac{s_{i,j}}{capacity_v} $$</div>
+        </div>
+        <p>To better model our given problem, we need to extend the <em>Transshipment Problem</em> with a number of dimensions and constraints:</p>
+        <ol>
+            <li><strong>Time:</strong> No schedule can exist without time, which is why we need to add a discrete dimension for time.</li>
+            <li><strong>Temporal Constraints:</strong>These constraints account for travel times and times for loading and unloading.</li>
+            <li><strong>Moving Vehicles:</strong> The traditional problem considers vehicles a static resource, but in real logistics networks, vehicles are moving all the time. This means that vehicles that are available now, might not be available the next
+                day at the same location.</li>
+            <li>
+                <strong>Memory:</strong> Since our calculations alter an existing plan, we need to be able to incorporate previous schedules into current calculations. This is in contrast to the traditional problem, where each solution is calculated from
+                scratch. Conveniently, we can use the same mechanism to include data such as long-term forecasts into the caluclation.</li>
+        </ol>
+        <p>These three scenarios give you an overview of the goal of our calculations. Each scenario results in a schedule that is depicted in the table below each scenario. Note that the third scenario includes a movement from a previous calculation.</p>
+        <figure>
+            <img style="width: 32%;" src="assets/scenario1.png" />
+            <img style="width: 32%;" src="assets/scenario2.png" />
+            <img style="width: 32%;" src="assets/scenario3.png" />
+            <div class="schedule-wrapper">
+                <table class="schedule">
+                    <tr>
+                        <th>FROM</th>
+                        <th>TO</th>
+                        <th>TRUCK</th>
+                        <th>DEP</th>
+                        <th>ARR</th>
+                        <th>SHIP</th>
+                    </tr>
+                    <tr>
+                        <td>A</td>
+                        <td>C</td>
+                        <td>1</td>
+                        <td>10</td>
+                        <td>12</td>
+                        <td>S1</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="schedule-wrapper">
+                <table class="schedule">
+                    <tr>
+                        <th>FROM</th>
+                        <th>TO</th>
+                        <th>TRUCK</th>
+                        <th>DEP</th>
+                        <th>ARR</th>
+                        <th>SHIP</th>
+                    </tr>
+                    <tr>
+                        <td>A</td>
+                        <td>B</td>
+                        <td>1</td>
+                        <td>10</td>
+                        <td>11</td>
+                        <td>S1</td>
+                    </tr>
+                    <tr>
+                        <td>B</td>
+                        <td>C</td>
+                        <td>1</td>
+                        <td>12</td>
+                        <td>14</td>
+                        <td>S1,S2</td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="schedule-wrapper">
+                <table class="schedule">
+                    <tr>
+                        <th>FROM</th>
+                        <th>TO</th>
+                        <th>TRUCK</th>
+                        <th>DEP</th>
+                        <th>ARR</th>
+                        <th>SHIP</th>
+                    </tr>
+                    <tr>
+                        <td>B</td>
+                        <td>A</td>
+                        <td>0</td>
+                        <td>11</td>
+                        <td>12</td>
+                        <td>SS</td>
+                    </tr>
+                    <tr>
+                        <td>A</td>
+                        <td>C</td>
+                        <td>1</td>
+                        <td>13</td>
+                        <td>15</td>
+                        <td>S1,S2</td>
+                    </tr>
+                </table>
+            </div>
+            <figcaption>Three sample scenarios and the resulting schedule</figcaption>
+        </figure>
+        <p>
+            The last thing we need to do in order to calculate complete schedules is vehicle assignments. So far, we only computed where and when how many vehicles should be driving. We did not say who should be driving. Our second optimization model for <em>Vehicle Assignment</em>            finds a solution for that.
+        </p>
+        <h3>Part 3: Handling Unexpected Delays</h3>
+        <p>Since our system directly interferes with daily operations, it needs to be aware of incidents that cause delays, in case the actual plan no longer works. It also needs to provide a context-aware mechanism for resolving such incidents. We came
+            up with a categorization that knows three types of events that cause delays:
+            <ol>
+                <li><strong>Single Vehicle</strong>: If one vehicle is involved, e.g., technical breakdowns</li>
+                <li><strong>Single Connection</strong>: If one connection is affected, e.g., traffic congestions</li>
+                <li><strong>Multi Connection</strong>: If multiple connections are affected, e.g., bad weather conditions</li>
+            </ol>
+            We use complex event processing for detection and a decision tree for systematic handling of incidents.
+        </p>
+        <h3>Part 4: Demo User Interface</h3>
+        <p>For show-cases and demos, we designed a UI that visualizes the current network state and provides some statistics on performance indicators.</p>
+        <figure>
+            <img class="shadow" style="width: 48%; margin-right: 2%;" src="assets/smart-dispatch-1.png" />
+            <img class="shadow" style="width: 48%;" src="assets/smart-dispatch-2.png" />
+            <figcaption>Demo user interface: Network view and order view</figcaption>
+        </figure>
+        <h3>Experiments</h3>
+        <p>The figure below depicts the history from one of our simulations, which simulated one week of network activity. In the graph you can see a grey area, which represents the traditional, fixed schedule and a red-dotted line, which represents the
+            dynamic schedule, calculated by our models. Each invocation of schedule optimizer is marked as <em>Inv (1-5)</em>. In this particular experiment, we assumed that 65% of the movements from the fixed schedule would be included into our calculations.
+            This simplified calculations and brought more stability to the overall schedule. In general, there is a lot to say about the results, but the most noticable difference lies in the balance of resources: In the beginning of the week, our approach
+            requires much less resources, while at the end of the week, it uses more. </p>
+        <figure>
+            <img style="width: 80%;" src="assets/results-1.png" />
+            <figcaption>Static schedule (grey) vs. dynamic schedule (dotted)</figcaption>
+        </figure>
+        <h3>Results</h3>
+        <p>Overall, our tool managed to improve the schedule by using 2.01% less movements, improving vehicle utilization by 2.8 percentage points and reducing the overall amount of driven kilometers by 15.6%. In a second line of experiments, we tested the
+            impact of unforeseen incidents on the schedule. Overall, we saw that most of the single vehicle delays required postponement of future tours, while multi connection delays often required a rerouting of shipments, as simple postponement was
+            not sufficient. In the first case, an average 1.15 vehicles were affected per incident. This number grew to 3.5 with multi connection delays.</p>
+        <figure>
+            <img style="width: 80%;" src="assets/results-2.png" />
+            <figcaption>Incidents and their effect on the schedule</figcaption>
+        </figure>
+        <h3>Summary</h3>
+        <p>To summarize all of the above: There are too many empty trucks on the road. We thought about how to solve this problem and came up with a technical solution for LTL logistics providers. With our solution, we aim to improve the efficiency of schedules
+            by monitoring the current network state and adapting schedules on-demand. In our simulations, we were able to reduce the amount of driven kilomers by 15.6%, marking considerable improvements.</p>
+        <br/>
+        <h4>Notes and References</h4>
+        <ol id="ref" class="references">
+            <li>Statistics about road freight transportation in the EU, published by <em>Eurostat</em>, 2016 (<a href="http://ec.europa.eu/eurostat/statistics-explained/index.php?title=Road_freight_transport_by_journey_characteristics">Link to Publication</a>)</li>
+            <li>Take 25 Billion tonne-kilometers per year and an average load of 14 tons per transport (both Eurostat numbers for Austria), which leaves us with 1.8 Billion kilometers. Now assume a price-per-kilometer of 1.05€, then empty hauls costs transport
+                providers 945M€ per year.</li>
+            <li>Herer, Y. T., & Tzur, M. (2001). The dynamic transshipment problem. Naval Research Logistics (NRL), 48(5), 386-408.</li>
+            <li>Blog post about the efficiency of driverless trucks, published by the company <em>Flexport</em>, 2016 (<a href="https://www.flexport.com/blog/self-driving-truck-automation-of-million-jobs/">Link to Posting</a>)</li>
+            <li>Report about trends in the logistics industry, published by <em>DHL Trend Research</em>, 2016 (<a href="http://www.dhl.com/en/about_us/logistics_insights/dhl_trend_research/trendradar.html#.W1YaW9gzYsk">Link to Publication</a>)</li>
+        </ol>
+    </article>
+</body>
